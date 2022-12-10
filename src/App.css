@@ -2,6 +2,15 @@
   text-align: center;
 }
 
+input.form-control {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.btn {
+  margin: 5px
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

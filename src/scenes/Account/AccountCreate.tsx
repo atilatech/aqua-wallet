@@ -32,21 +32,22 @@ function AccountCreate() {
   }
   
   return (
-    <>
+    <div className='AccountCreate container mt-5'>
       <form onSubmit={event=>event.preventDefault()}>
-        <label>
-          Seedphrase:
-          <input type="text" value={seedphrase} onChange={handleChange} />
-        </label>
-        <button type="button" onClick={recoverAccount}>
-          Recover Account
-        </button>
-        <button type="button" onClick={createAccount}>
+        <button type="button" className="btn btn-success" onClick={createAccount}>
           Create Account
         </button>
+        <div className="form-group">
+          <label>Seedphrase:</label>
+          <input type="text" className="form-control" value={seedphrase} onChange={handleChange} />
+        </div>
+        <button type="button" className="btn btn-primary mr-3" onClick={recoverAccount}>
+          Recover Account
+        </button>
       </form>
+      <hr/>
       {account && <AccountDetail account={account} /> }
-    </>
+    </div>
   )
 
 }

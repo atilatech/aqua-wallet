@@ -42,7 +42,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
         setNetworkResponse({
           status: 'complete',
           message: <p>Transfer complete! <a href={`${goerli.blockExplorerUrl}/tx/${receipt.transactionHash}`} target="_blank" rel="noreferrer">
-            View transation
+            View transaction
             </a></p>,
         });
         return receipt;
@@ -68,39 +68,38 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
   }
 
   return (
-    <>
-      <p>Address: {account.address}</p>
-      <a href={`https://goerli.etherscan.io/address/${account.address}`} target="_blank" rel="noreferrer">
-        View on Etherscan
-      </a>
-      <br />
-      <label>
-        Destination Address:
-        <input type="text" value={destinationAddress} onChange={handleDestinationAddressChange} />
-      </label>
-      <br />
-      <label>
-        Amount:
-        <input type="number" value={amount} onChange={handleAmountChange} />
-        </label>
-        <br />
+    <div className='AccountDetail container'>
+        <p>
+            Address: <a href={`https://goerli.etherscan.io/address/${account.address}`} target="_blank" rel="noreferrer">
+            {account.address}
+            </a>
+        </p>
 
-        <button type="button" onClick={transfer} disabled={!amount}>
+        <div className="form-group">
+            <label>Destination Address:</label>
+            <input className="form-control" type="text" value={destinationAddress} onChange={handleDestinationAddressChange} />
+        </div>
+
+        <div className="form-group">
+            <label>Amount:</label>
+            <input className="form-control" type="number" value={amount} onChange={handleAmountChange} />
+        </div>
+
+        <button className="btn btn-primary" type="button" onClick={transfer} disabled={!amount || networkResponse.status === 'pending'}>
             Send {amount} ETH
-          </button>
+        </button>
 
+        {/* Show the network response status and message */}
+        {networkResponse.status && 
+        <>
+            {networkResponse.status === 'pending' && <p>Transfer is pending...</p>}
+            {networkResponse.status === 'complete' && <p>{networkResponse.message}</p>}
+            {networkResponse.status === 'error' && <p>Error occurred while transferring tokens: {networkResponse.message}</p>}
+        </>
+        }
 
-          {/* Show the network response status and message */}
-          {networkResponse.status && 
-          <>
-          {networkResponse.status === 'pending' && <p>Transfer is pending...</p>}
-          {networkResponse.status === 'complete' && <p>{networkResponse.message}</p>}
-          {networkResponse.status === 'error' && <p>Error occurred while transferring tokens: {networkResponse.message}</p>}
-          </>
-          }
-
-          <AccountTransactions account={account} />
-    </>
+        <AccountTransactions account={account} />
+    </div>
   )
 }
 

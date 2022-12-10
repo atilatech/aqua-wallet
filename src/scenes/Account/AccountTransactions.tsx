@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Account } from '../../models/Account';
 import { goerli } from '../../models/Chain';
 import { Transaction } from '../../models/Transaction';
@@ -19,78 +19,107 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
     message: '',
   });
 
-  useEffect(() => {
-    setNetworkResponse({
-        status: 'pending',
-        message: '',
-      });
-    TransactionService.getTransactions(account.address).then(response => {
-      setTransactions(response.data.result);
-    }).catch(error => {
-        console.log({error})
+  const getTransactions = useCallback(
+    () => {
+        console.log(account.address);
         setNetworkResponse({
-            status: 'error',
-            message: JSON.stringify(error),
-          });
-    }).finally(()=>{
-        setNetworkResponse({
-            status: null,
+            status: 'pending',
             message: '',
+          });
+        TransactionService.getTransactions(account.address).then(response => {
+          setTransactions(response.data.result);
+        }).catch(error => {
+            console.log({error})
+            setNetworkResponse({
+                status: 'error',
+                message: JSON.stringify(error),
+              });
+        }).finally(()=>{
+            setNetworkResponse({
+                status: 'complete',
+                message: '',
+            });
         });
-    });
-  }, [account]);
+      },[account.address]
+  ) ;
+
+  useEffect(() => {
+    getTransactions();
+  }, [getTransactions]);
 
   return (
-    <div>
-      <h2>Transactions for Account: {account.address}</h2>
-      <table>
-        <thead>
+    <div className="AccountTransactions">
+
+        <h2>Transactions for Account: {account.address}</h2>
+        <table className="table table-striped">
+            <thead>
             <tr>
-            <th>Hash</th>
-            <th>From Address</th>
-            <th>To Address</th>
-            <th>Value</th>
-            <th>Timestamp</th>
+                <th>Hash</th>
+                <th>From Address</th>
+                <th>To Address</th>
+                <th>Value</th>
+                <th>Timestamp</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {transactions.map(transaction => (
-            <tr key={transaction.hash}>
+                <tr key={transaction.hash}>
                 <td>
-                <a href={`${goerli.blockExplorerUrl}/tx/${transaction.hash}`} target="_blank" rel="noopener noreferrer">
+                    <a
+                    href={`${goerli.blockExplorerUrl}/tx/${transaction.hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >
                     {shortenAddress(transaction.hash)}
-                </a>
+                    </a>
                 </td>
                 <td>
-                  <a href={`${goerli.blockExplorerUrl}/address/${transaction.from_address}`} target="_blank" rel="noopener noreferrer">
+                    <a
+                    href={`${goerli.blockExplorerUrl}/address/${transaction.from_address}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >
                     {shortenAddress(transaction.from_address)}
-                  </a>
+                    </a>
                 </td>
                 <td>
-                  <a href={`${goerli.blockExplorerUrl}/address/${transaction.to_address}`} target="_blank" rel="noopener noreferrer">
+                    <a
+                    href={`${goerli.blockExplorerUrl}/address/${transaction.to_address}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >
                     {shortenAddress(transaction.to_address)}
-                  </a>
+                    </a>
                 </td>
                 <td>
-                  {ethers.utils.formatEther(transaction.value)} ETH
+                    {ethers.utils.formatEther(transaction.value)} ETH
                 </td>
                 <td>
-                  {new Date(transaction.block_timestamp).toLocaleString()}
+                    {new Date(transaction.block_timestamp).toLocaleString()}
                 </td>
-            </tr>
+                </tr>
             ))}
-        </tbody>
-      </table>
-
-      {/* Show the network response status and message */}
-      {networkResponse.status && 
-          <>
-          {networkResponse.status === 'pending' && <p>Transfer is pending...</p>}
-          {networkResponse.status === 'complete' && <p>{networkResponse.message}</p>}
-          {networkResponse.status === 'error' && <p>Error occurred while transferring tokens: {networkResponse.message}</p>}
-          </>
-        }
-
+            </tbody>
+        </table>
+        {networkResponse.status === "complete" && transactions.length === 0 && (
+            <p>No transactions found for this address</p>
+        )}
+        <button type="button" className="btn btn-primary" onClick={getTransactions} disabled={networkResponse.status==="pending"}>
+          Refresh Transactions
+        </button>
+        {/* Show the network response status and message */}
+        {networkResponse.status && (
+        <>
+        {networkResponse.status === "pending" && (
+        <p className="text-info">Loading transactions...</p>
+        )}
+        {networkResponse.status === "error" && (
+        <p className="text-danger">
+            Error occurred while transferring tokens: {networkResponse.message}
+        </p>
+        )}
+        </>
+        )}
     </div>
   );
 };

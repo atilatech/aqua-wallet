@@ -33,7 +33,7 @@ function AccountCreate() {
   
   return (
     <>
-      <form>
+      <form onSubmit={event=>event.preventDefault()}>
         <label>
           Seedphrase:
           <input type="text" value={seedphrase} onChange={handleChange} />

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { sendToken } from '../../utils/TransactionUtils';
 import { goerli } from '../../models/Chain';
 import { Account } from '../../models/Account';
+import AccountTransactions from './AccountTransactions';
 
 interface AccountDetailProps {
   account: Account
@@ -40,7 +41,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
         // Set the network response status to "complete" and the message to the transaction hash
         setNetworkResponse({
           status: 'complete',
-          message: <p>Transfer complete! <a href={`${goerli.blockExplorerUrl}/tx/${receipt.transactionHash}`} target="_blank">
+          message: <p>Transfer complete! <a href={`${goerli.blockExplorerUrl}/tx/${receipt.transactionHash}`} target="_blank" rel="noreferrer">
             View transation
             </a></p>,
         });
@@ -97,6 +98,8 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
           {networkResponse.status === 'error' && <p>Error occurred while transferring tokens: {networkResponse.message}</p>}
           </>
           }
+
+          <AccountTransactions account={account} />
     </>
   )
 }

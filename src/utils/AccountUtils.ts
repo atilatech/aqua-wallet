@@ -17,3 +17,7 @@ export function generateAccount(index: number = 0, seedPhrase: string = ''): { a
   console.log(`Generated account: `, { address, privateKey, seedPhrase });
   return { account: { address, privateKey }, seedPhrase };
 }
+
+export function shortenAddress(str: string, numChars: number=4) {
+  return `${str.substring(0, numChars)}...${str.substring(str.length - numChars)}`;
+}

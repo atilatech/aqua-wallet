@@ -1,6 +1,5 @@
 import { ethers, Wallet } from 'ethers';
-
-const INFURA_RPC_URL = 'https://goerli.infura.io/v3/59b59e23bb7c44d799b5db4a1b83e4ee';
+import { CHAINS_CONFIG, goerli } from '../models/Chain';
 
 export async function sendToken(
   amount: number,
@@ -9,9 +8,11 @@ export async function sendToken(
   privateKey: string,
 ) {
 
+  const chain = CHAINS_CONFIG[goerli.chainId];
+
   console.log({amount, from, to});
   // Create a provider using the Infura RPC URL for Goerli
-  const provider = new ethers.providers.JsonRpcProvider(INFURA_RPC_URL);
+  const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl);
 
   // Create a wallet instance from the sender's private key
   const wallet: Wallet = new ethers.Wallet(privateKey, provider);
@@ -29,16 +30,6 @@ export async function sendToken(
   // Wait for the transaction to be mined
   const receipt = await transaction.wait();
 
-
   console.log({transaction, receipt});
-
-  // Check the transaction status
-  if (receipt.status === 1) {
-    // Transaction was successful
-    console.log(`Sent ${amount} ETH from ${from} to ${to}`);
-    console.log(`Transaction URL: https://goerli.etherscan.io/tx/${receipt.transactionHash}`);
-  } else {
-    // Transaction failed
-    console.log(`Failed to send ${amount} ETH from ${from} to ${to}`);
-  }
+  return {transaction, receipt};
 }

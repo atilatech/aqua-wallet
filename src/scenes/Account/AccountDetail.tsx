@@ -92,29 +92,44 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
 
         <div className="form-group">
             <label>Destination Address:</label>
-            <input className="form-control" type="text" value={destinationAddress} onChange={handleDestinationAddressChange} />
+            <input
+            className="form-control"
+            type="text"
+            value={destinationAddress}
+            onChange={handleDestinationAddressChange}
+            />
         </div>
 
         <div className="form-group">
             <label>Amount:</label>
-            <input className="form-control" type="number" value={amount} onChange={handleAmountChange} />
+            <input
+            className="form-control"
+            type="number"
+            value={amount}
+            onChange={handleAmountChange}
+            />
         </div>
 
-        <button className="btn btn-primary" type="button" onClick={transfer} disabled={!amount || networkResponse.status === 'pending'}>
+        <button
+            className="btn btn-primary"
+            type="button"
+            onClick={transfer}
+            disabled={!amount || networkResponse.status === 'pending'}
+        >
             Send {amount} ETH
         </button>
 
-        {/* Show the network response status and message */}
-        {networkResponse.status && 
-        <>
+        {networkResponse.status &&
+            <>
             {networkResponse.status === 'pending' && <p>Transfer is pending...</p>}
             {networkResponse.status === 'complete' && <p>{networkResponse.message}</p>}
             {networkResponse.status === 'error' && <p>Error occurred while transferring tokens: {networkResponse.message}</p>}
-        </>
+            </>
         }
 
         <AccountTransactions account={account} />
     </div>
+
   )
 }
 

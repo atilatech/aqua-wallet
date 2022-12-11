@@ -38,15 +38,18 @@ function AccountCreate() {
           Create Account
         </button>
         <div className="form-group">
-          <label>Seedphrase:</label>
-          <input type="text" className="form-control" value={seedphrase} onChange={handleChange} />
+          <input type="text" placeholder='Seedphrase or private key' className="form-control" value={seedphrase} onChange={handleChange} />
         </div>
         <button type="button" className="btn btn-primary mr-3" onClick={recoverAccount}>
           Recover Account
         </button>
       </form>
-      <hr/>
-      {account && <AccountDetail account={account} /> }
+      {account && 
+      <>
+        <hr/>
+        <AccountDetail account={account} />
+      </>
+       }
     </div>
   )
 

@@ -30,6 +30,5 @@ export async function sendToken(
   // Wait for the transaction to be mined
   const receipt = await transaction.wait();
 
-  console.log({transaction, receipt});
   return {transaction, receipt};
 }

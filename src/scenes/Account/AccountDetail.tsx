@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { sendToken } from '../../utils/TransactionUtils';
 import { goerli } from '../../models/Chain';
 import { Account } from '../../models/Account';
 import AccountTransactions from './AccountTransactions';
+import { ethers } from 'ethers';
+import { toFixedIfNecessary } from '../../utils/AccountUtils';
+import './Account.css';
 
 interface AccountDetailProps {
   account: Account
@@ -11,11 +14,21 @@ interface AccountDetailProps {
 const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
   const [destinationAddress, setDestinationAddress] = useState('');
   const [amount, setAmount] = useState(0);
+  const [balance, setBalance] = useState(account.balance)
 
   const [networkResponse, setNetworkResponse] = useState<{ status: null | 'pending' | 'complete' | 'error', message: string | React.ReactElement }>({
     status: null,
     message: '',
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+        const provider = new ethers.providers.JsonRpcProvider(goerli.rpcUrl);
+        let accountBalance = await provider.getBalance(account.address);
+        setBalance((String(toFixedIfNecessary(ethers.utils.formatEther(accountBalance)))));
+    }
+    fetchData();
+}, [account.address])
 
   function handleDestinationAddressChange(event: React.ChangeEvent<HTMLInputElement>) {
     setDestinationAddress(event.target.value);
@@ -67,13 +80,15 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
     }
   }
 
+  console.log({account});
   return (
     <div className='AccountDetail container'>
-        <p>
+        <h4>
             Address: <a href={`https://goerli.etherscan.io/address/${account.address}`} target="_blank" rel="noreferrer">
             {account.address}
             </a>
-        </p>
+            Balance: {balance} ETH
+        </h4>
 
         <div className="form-group">
             <label>Destination Address:</label>

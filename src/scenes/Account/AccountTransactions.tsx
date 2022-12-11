@@ -50,7 +50,7 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
   return (
     <div className="AccountTransactions">
 
-        <h2>Transactions for Account: {account.address}</h2>
+        <h4>Transactions</h4>
         <table className="table table-striped overflow-auto">
             <thead>
             <tr>

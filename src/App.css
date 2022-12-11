@@ -3,9 +3,6 @@
   width: 575px;
 }
 
-.AccountTransactions {
-  overflow-x: scroll;
-}
 
 input.form-control {
   margin-top: 5px;

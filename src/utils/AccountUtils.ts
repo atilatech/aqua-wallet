@@ -15,7 +15,7 @@ export function generateAccount(seedPhrase: string = "", index: number = 0):
   new Wallet(seedPhrase);
 
   const { address } = wallet;
-  const account = { address, privateKey: wallet.privateKey };
+  const account = { address, privateKey: wallet.privateKey, balance: "0" };
 
   console.log(`Generated account: `, { account, seedPhrase });
   
@@ -25,4 +25,8 @@ export function generateAccount(seedPhrase: string = "", index: number = 0):
 
 export function shortenAddress(str: string, numChars: number=4) {
   return `${str.substring(0, numChars)}...${str.substring(str.length - numChars)}`;
+}
+
+export function toFixedIfNecessary( value: string, decimalPlaces: number = 2 ){
+  return +parseFloat(value).toFixed( decimalPlaces );
 }

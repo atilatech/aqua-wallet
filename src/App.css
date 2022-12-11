@@ -1,6 +1,10 @@
 .App {
   text-align: center;
-  width: 500px;
+  width: 575px;
+}
+
+.AccountTransactions {
+  overflow-x: scroll;
 }
 
 input.form-control {

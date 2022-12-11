@@ -51,12 +51,12 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
     <div className="AccountTransactions">
 
         <h2>Transactions for Account: {account.address}</h2>
-        <table className="table table-striped">
+        <table className="table table-striped overflow-auto">
             <thead>
             <tr>
                 <th>Hash</th>
-                <th>From Address</th>
-                <th>To Address</th>
+                <th>From</th>
+                <th>To</th>
                 <th>Value</th>
                 <th>Timestamp</th>
             </tr>

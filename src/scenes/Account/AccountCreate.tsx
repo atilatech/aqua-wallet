@@ -10,17 +10,25 @@ function AccountCreate() {
   // Declare a new state variable, which we'll call "account"
   const [account, setAccount] = useState<Account | null>(null);
 
+  // Declare a new state variable, which we'll call "showRecoverInput"
+  // and initialize it to false
+  const [showRecoverInput, setShowRecoverInput] = useState(false);
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     // Update the seedphrase state with the value from the text input
     setSeedphrase(event.target.value);
   }
 
-  async function recoverAccount() {
-    // Call the generateAccount function and pass it 0 and the current seedphrase
-    const result = await generateAccount(0, seedphrase);
+  const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      
+      // Call the generateAccount function and pass it 0 and the current seedphrase
+      const result = await generateAccount(seedphrase);
 
-    // Update the account state with the newly recovered account
-    setAccount(result.account);
+      // Update the account state with the newly recovered account
+      setAccount(result.account);
+    }
   }
 
   async function createAccount() {
@@ -34,15 +42,20 @@ function AccountCreate() {
   return (
     <div className='AccountCreate container mt-5'>
       <form onSubmit={event=>event.preventDefault()}>
-        <button type="button" className="btn btn-success" onClick={createAccount}>
+        <button type="button" className="btn btn-primary" onClick={createAccount}>
           Create Account
         </button>
-        <div className="form-group">
-          <input type="text" placeholder='Seedphrase or private key' className="form-control" value={seedphrase} onChange={handleChange} />
-        </div>
-        <button type="button" className="btn btn-primary mr-3" onClick={recoverAccount}>
-          Recover Account
+        {/* Add a button to toggle showing the recover account input and button */}
+        <button type="button" className="btn btn-outline-primary ml-3" onClick={() => setShowRecoverInput(prevShowRecoverInput => !prevShowRecoverInput)}>
+          Recover account
         </button>
+        {/* Show the recover account input and button if showRecoverInput is true */}
+        {showRecoverInput && (
+          <div className="form-group mt-3">
+            <input type="text" placeholder='Seedphrase or private key for recovery' className="form-control" 
+            value={seedphrase} onChange={handleChange} onKeyDown={handleKeyDown}/>
+          </div>
+        )}
       </form>
       {account && 
       <>

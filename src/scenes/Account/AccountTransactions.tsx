@@ -50,7 +50,7 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
   return (
     <div className="AccountTransactions">
 
-        <h4>Transactions</h4>
+        <h2>Transactions</h2>
         <table className="table table-striped overflow-auto">
             <thead>
             <tr>
@@ -81,6 +81,11 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
                     >
                     {shortenAddress(transaction.from_address)}
                     </a>
+                    {transaction.from_address.toLowerCase()===account.address.toLowerCase() ? 
+                        <span className="badge rounded-pill bg-warning">OUT</span>
+                        :
+                        <span className="badge rounded-pill bg-success">IN</span>
+                    }
                 </td>
                 <td>
                     <a

@@ -51,6 +51,27 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
     <div className="AccountTransactions">
 
         <h2>Transactions</h2>
+        <div className="TransactionsMetaData">
+            {networkResponse.status === "complete" && transactions.length === 0 && (
+                <p>No transactions found for this address</p>
+            )}
+            <button type="button" className="btn btn-primary" onClick={getTransactions} disabled={networkResponse.status==="pending"}>
+            Refresh Transactions
+            </button>
+            {/* Show the network response status and message */}
+            {networkResponse.status && (
+            <>
+            {networkResponse.status === "pending" && (
+            <p className="text-info">Loading transactions...</p>
+            )}
+            {networkResponse.status === "error" && (
+            <p className="text-danger">
+                Error occurred while transferring tokens: {networkResponse.message}
+            </p>
+            )}
+            </>
+            )}
+        </div>
         <table className="table table-striped overflow-auto">
             <thead>
             <tr>
@@ -106,25 +127,6 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
             ))}
             </tbody>
         </table>
-        {networkResponse.status === "complete" && transactions.length === 0 && (
-            <p>No transactions found for this address</p>
-        )}
-        <button type="button" className="btn btn-primary" onClick={getTransactions} disabled={networkResponse.status==="pending"}>
-          Refresh Transactions
-        </button>
-        {/* Show the network response status and message */}
-        {networkResponse.status && (
-        <>
-        {networkResponse.status === "pending" && (
-        <p className="text-info">Loading transactions...</p>
-        )}
-        {networkResponse.status === "error" && (
-        <p className="text-danger">
-            Error occurred while transferring tokens: {networkResponse.message}
-        </p>
-        )}
-        </>
-        )}
     </div>
   );
 };

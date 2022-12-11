@@ -22,13 +22,18 @@ function AccountCreate() {
   const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === 13) {
       event.preventDefault();
-      
+      recoverAccount();
+    }
+  }
+
+
+  async function recoverAccount() {
+    // Call the generateAccount function with no arguments
       // Call the generateAccount function and pass it 0 and the current seedphrase
       const result = await generateAccount(seedphrase);
 
       // Update the account state with the newly recovered account
       setAccount(result.account);
-    }
   }
 
   async function createAccount() {
@@ -40,13 +45,21 @@ function AccountCreate() {
   }
   
   return (
-    <div className='AccountCreate container mt-5'>
+    <div className='AccountCreate p-5 m-3 card shadow'>
+      <h1>
+        Aqua Wallet
+      </h1>
       <form onSubmit={event=>event.preventDefault()}>
         <button type="button" className="btn btn-primary" onClick={createAccount}>
           Create Account
         </button>
         {/* Add a button to toggle showing the recover account input and button */}
-        <button type="button" className="btn btn-outline-primary ml-3" onClick={() => setShowRecoverInput(prevShowRecoverInput => !prevShowRecoverInput)}>
+        {/* If show recover input is visible, clicking the button again will submit the phrase in the input */}
+        <button type="button" className="btn btn-outline-primary ml-3" 
+        onClick={() => showRecoverInput ? recoverAccount() : setShowRecoverInput(true)}
+        // if the recoveryinput is showing but there is no seedphrase, disable the ability to recover account
+        disabled={showRecoverInput&&!seedphrase}
+        >
           Recover account
         </button>
         {/* Show the recover account input and button if showRecoverInput is true */}

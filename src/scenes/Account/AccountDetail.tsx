@@ -80,7 +80,6 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
     }
   }
 
-  console.log({account});
   return (
     <div className='AccountDetail container'>
         <h4>

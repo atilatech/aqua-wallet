@@ -8,15 +8,7 @@
       "default_popup": "index.html",
       "default_title": "Open Wallet"
   },
-  "content_scripts": [
-    {
-        "matches": ["http://*/*", "https://*/*"],
-        "js": ["./static/js/content.js"]
-    }
- ],
-  "permissions": [
-    "activeTab"
-  ],
+  "permissions": [],
   "icons": {
       "16": "logo512.png",
       "48": "logo512.png",

@@ -21,7 +21,6 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
 
   const getTransactions = useCallback(
     () => {
-        console.log(account.address);
         setNetworkResponse({
             status: 'pending',
             message: '',

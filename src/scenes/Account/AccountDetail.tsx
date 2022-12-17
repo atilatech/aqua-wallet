@@ -46,11 +46,9 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
     });
 
     try {
-      console.log("transfer:", account.privateKey);
-      const { transaction, receipt } = await sendToken(amount, account.address, destinationAddress, account.privateKey);
+      const { receipt } = await sendToken(amount, account.address, destinationAddress, account.privateKey);
 
       if (receipt.status === 1) {
-        console.log(`Transaction URL: `, transaction.hash);
         // Set the network response status to "complete" and the message to the transaction hash
         setNetworkResponse({
           status: 'complete',

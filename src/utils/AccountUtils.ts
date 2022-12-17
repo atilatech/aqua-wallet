@@ -16,8 +16,6 @@ export function generateAccount(seedPhrase: string = "", index: number = 0):
 
   const { address } = wallet;
   const account = { address, privateKey: wallet.privateKey, balance: "0" };
-
-  console.log(`Generated account: `, { account, seedPhrase });
   
   // If the seedphrase does not include spaces then it's actually a private key, so return a blank string.
   return { account, seedPhrase: seedPhrase.includes(" ")? seedPhrase : "" };

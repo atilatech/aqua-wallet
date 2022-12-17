@@ -10,8 +10,8 @@
   },
   "permissions": [],
   "icons": {
-      "16": "logo512.png",
-      "48": "logo512.png",
-      "128": "logo512.png"
+      "16": "walletLogo512.png",
+      "48": "walletLogo512.png",
+      "128": "walletLogo512.png"
   }
 }

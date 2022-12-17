@@ -10,6 +10,10 @@ A crypto wallet that makes it easy to use the blockchain.
 Demo: [wallet.atila.ca](https://wallet.atila.ca)
 
 [View on Chrome Store (viewable once it's live)](https://chrome.google.com/webstore/detail/jpahabobabnbigaglekpjekelpoheebm)
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/atilatech/aqua-wallet)
+
+
 ## Quickstart
 
 ```

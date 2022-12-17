@@ -7,6 +7,8 @@ A crypto wallet that makes it easy to use the blockchain.
 3. Send ETH
 4. View transactions
 
+Try: https://aqua-wallet.netlify.app/ or https://wallet.atila.ca (this link might not work)
+
 [View on Chrome Store (viewable once it's live)](https://chrome.google.com/webstore/detail/jpahabobabnbigaglekpjekelpoheebm)
 ## Quickstart
 

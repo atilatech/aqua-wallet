@@ -1,0 +1,38 @@
+name: 'Deploy'
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+env:
+  REACT_APP_ATILA_STAGE: prod
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - run: yarn
+  deploy:
+    name: 'Deploy'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - run: NODE_ENV="production" yarn
+      - run: CI="" yarn build
+      - name: Deploy to netlify
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_PROD }}
+          REACT_APP_ATILA_STAGE: prod
+        with:
+          args: deploy --dir=./build --prod -m "${{github.ref_name}} ${{github.sha}}"

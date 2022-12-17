@@ -10,14 +10,12 @@ export async function sendToken(
 
   const chain = CHAINS_CONFIG[goerli.chainId];
 
-  console.log({amount, from, to});
   // Create a provider using the Infura RPC URL for Goerli
   const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl);
 
   // Create a wallet instance from the sender's private key
   const wallet: Wallet = new ethers.Wallet(privateKey, provider);
 
-  console.log({provider, wallet}, wallet.address, wallet.privateKey);
   // Construct the transaction object
   const tx = {
     to,
@@ -30,6 +28,5 @@ export async function sendToken(
   // Wait for the transaction to be mined
   const receipt = await transaction.wait();
 
-  console.log({transaction, receipt});
   return {transaction, receipt};
 }

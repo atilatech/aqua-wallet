@@ -21,7 +21,6 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
 
   const getTransactions = useCallback(
     () => {
-        console.log(account.address);
         setNetworkResponse({
             status: 'pending',
             message: '',
@@ -50,13 +49,34 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
   return (
     <div className="AccountTransactions">
 
-        <h2>Transactions for Account: {account.address}</h2>
-        <table className="table table-striped">
+        <h2>Transactions</h2>
+        <div className="TransactionsMetaData">
+            {networkResponse.status === "complete" && transactions.length === 0 && (
+                <p>No transactions found for this address</p>
+            )}
+            <button type="button" className="btn btn-primary" onClick={getTransactions} disabled={networkResponse.status==="pending"}>
+            Refresh Transactions
+            </button>
+            {/* Show the network response status and message */}
+            {networkResponse.status && (
+            <>
+            {networkResponse.status === "pending" && (
+            <p className="text-info">Loading transactions...</p>
+            )}
+            {networkResponse.status === "error" && (
+            <p className="text-danger">
+                Error occurred while transferring tokens: {networkResponse.message}
+            </p>
+            )}
+            </>
+            )}
+        </div>
+        <table className="table table-striped overflow-auto">
             <thead>
             <tr>
                 <th>Hash</th>
-                <th>From Address</th>
-                <th>To Address</th>
+                <th>From</th>
+                <th>To</th>
                 <th>Value</th>
                 <th>Timestamp</th>
             </tr>
@@ -81,6 +101,11 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
                     >
                     {shortenAddress(transaction.from_address)}
                     </a>
+                    {transaction.from_address.toLowerCase()===account.address.toLowerCase() ? 
+                        <span className="badge rounded-pill bg-warning">OUT</span>
+                        :
+                        <span className="badge rounded-pill bg-success">IN</span>
+                    }
                 </td>
                 <td>
                     <a
@@ -101,25 +126,6 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
             ))}
             </tbody>
         </table>
-        {networkResponse.status === "complete" && transactions.length === 0 && (
-            <p>No transactions found for this address</p>
-        )}
-        <button type="button" className="btn btn-primary" onClick={getTransactions} disabled={networkResponse.status==="pending"}>
-          Refresh Transactions
-        </button>
-        {/* Show the network response status and message */}
-        {networkResponse.status && (
-        <>
-        {networkResponse.status === "pending" && (
-        <p className="text-info">Loading transactions...</p>
-        )}
-        {networkResponse.status === "error" && (
-        <p className="text-danger">
-            Error occurred while transferring tokens: {networkResponse.message}
-        </p>
-        )}
-        </>
-        )}
     </div>
   );
 };

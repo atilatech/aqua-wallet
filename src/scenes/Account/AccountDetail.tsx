@@ -1,26 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import { sendToken } from '../../utils/TransactionUtils';
-import { goerli } from '../../models/Chain';
-import { Account } from '../../models/Account';
-import AccountTransactions from './AccountTransactions';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import BuySellCrypto from '../../components/BuySellCrypto';
+import SendCrypto from '../../components/SendCrypto';
+import { Account } from '../../models/Account';
+import { goerli } from '../../models/Chain';
 import { toFixedIfNecessary } from '../../utils/AccountUtils';
 import './Account.css';
-import BuySellCrypto from '../../components/BuySellCrypto';
+import AccountTransactions from './AccountTransactions';
 
 interface AccountDetailProps {
   account: Account
 }
 
-const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
-  const [destinationAddress, setDestinationAddress] = useState('');
-  const [amount, setAmount] = useState(0);
+function AccountDetail({account}: AccountDetailProps) {
   const [balance, setBalance] = useState(account.balance)
-
-  const [networkResponse, setNetworkResponse] = useState<{ status: null | 'pending' | 'complete' | 'error', message: string | React.ReactElement }>({
-    status: null,
-    message: '',
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,54 +24,6 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
     fetchData();
 }, [account.address])
 
-  function handleDestinationAddressChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setDestinationAddress(event.target.value);
-  }
-
-  function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setAmount(Number.parseFloat(event.target.value));
-  }
-
-  async function transfer() {
-    // Set the network response status to "pending"
-    setNetworkResponse({
-      status: 'pending',
-      message: '',
-    });
-
-    try {
-      const { receipt } = await sendToken(amount, account.address, destinationAddress, account.privateKey);
-
-      if (receipt.status === 1) {
-        // Set the network response status to "complete" and the message to the transaction hash
-        setNetworkResponse({
-          status: 'complete',
-          message: <p>Transfer complete! <a href={`${goerli.blockExplorerUrl}/tx/${receipt.transactionHash}`} target="_blank" rel="noreferrer">
-            View transaction
-            </a></p>,
-        });
-        return receipt;
-      } else {
-        // Transaction failed
-        console.log(`Failed to send ${receipt}`);
-        // Set the network response status to "error" and the message to the receipt
-        setNetworkResponse({
-          status: 'error',
-          message: JSON.stringify(receipt),
-        });
-        return { receipt };
-      }
-    } catch (error: any) {
-      // An error occurred while sending the transaction
-      console.error({ error });
-      // Set the network response status to "error" and the message to the error
-      setNetworkResponse({
-        status: 'error',
-        message: error.reason || JSON.stringify(error),
-      });
-    }
-  }
-
   return (
     <div className='AccountDetail container'>
         <h4>
@@ -87,44 +32,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
             </a><br/>
             Balance: {balance} ETH
         </h4>
-
-        <div className="form-group">
-            <label>Destination Address:</label>
-            <input
-            className="form-control"
-            type="text"
-            value={destinationAddress}
-            onChange={handleDestinationAddressChange}
-            />
-        </div>
-
-        <div className="form-group">
-            <label>Amount:</label>
-            <input
-            className="form-control"
-            type="number"
-            value={amount}
-            onChange={handleAmountChange}
-            />
-        </div>
-
-        <button
-            className="btn btn-primary"
-            type="button"
-            onClick={transfer}
-            disabled={!amount || networkResponse.status === 'pending'}
-        >
-            Send {amount} ETH
-        </button>
-
-        {networkResponse.status &&
-            <>
-            {networkResponse.status === 'pending' && <p>Transfer is pending...</p>}
-            {networkResponse.status === 'complete' && <p>{networkResponse.message}</p>}
-            {networkResponse.status === 'error' && <p>Error occurred while transferring tokens: {networkResponse.message}</p>}
-            </>
-        }
-      <ul className="nav nav-tabs" id="myTab" role="tablist">
+        <ul className="nav nav-tabs" id="myTab" role="tablist">
         <li className="nav-item" role="presentation">
           <button className="nav-link active" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions" type="button" role="tab" aria-controls="transactions" aria-selected="true">Transactions</button>
         </li>
@@ -139,14 +47,14 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
         <div className="tab-pane fade show active" id="transactions" role="tabpanel" aria-labelledby="transactions-tab">
           <AccountTransactions account={account} />
         </div>
-        <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+        <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <SendCrypto account={account} />
+        </div>
         <div className="tab-pane fade" id="buy-sell" role="tabpanel" aria-labelledby="buy-sell-tab">
           <BuySellCrypto />
         </div>
       </div>
-        
     </div>
-
   )
 }
 

@@ -48,8 +48,6 @@ const AccountTransactions: React.FC<AccountTransactionsProps> = ({ account }) =>
 
   return (
     <div className="AccountTransactions">
-
-        <h2>Transactions</h2>
         <div className="TransactionsMetaData">
             {networkResponse.status === "complete" && transactions.length === 0 && (
                 <p>No transactions found for this address</p>

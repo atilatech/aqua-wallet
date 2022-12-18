@@ -42,7 +42,7 @@ function BuySellCrypto() {
     return (
         <div className="BuySellCrypto">
             <button onClick={openTransak} className='btn btn-primary'>
-                Buy Crypto
+                Buy/Sell Crypto
             </button>
         </div>
     );

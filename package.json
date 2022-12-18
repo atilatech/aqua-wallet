@@ -22,7 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:extension": "craco build",
+    "build:extension": "rm _redirects && craco build && touch redirects && echo '/*  /index.html  200' > _redirects",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

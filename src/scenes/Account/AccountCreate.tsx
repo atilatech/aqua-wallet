@@ -62,6 +62,10 @@ function AccountCreate() {
 
     // Update the account state with the newly created account
     setAccount(result.account);
+
+    if (localStorage.getItem(recoveryPhraseKeyName) !== result.seedPhrase) {
+      localStorage.setItem(recoveryPhraseKeyName, result.seedPhrase);
+    }
   }
 
   return (

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { useState, useEffect } from 'react';
 import BuySellCrypto from '../../components/BuySellCrypto';
 import SendCrypto from '../../components/SendCrypto';
 import { Account } from '../../models/Account';
@@ -22,37 +22,62 @@ function AccountDetail({account}: AccountDetailProps) {
         setBalance((String(toFixedIfNecessary(ethers.utils.formatEther(accountBalance)))));
     }
     fetchData();
-}, [account.address])
+  }, [account.address])
+
+  const tabs = [
+    {
+      id: 'transactions',
+      label: 'Transactions',
+      component: ({account}: {account: Account}) => <AccountTransactions account={account} />,
+    },
+    {
+      id: 'send',
+      label: 'Send',
+      component: ({account}: {account: Account}) => <SendCrypto account={account} />,
+    },
+    {
+      id: 'buy-sell',
+      label: 'Buy/Sell',
+      component: ({account}: {account: Account}) => <BuySellCrypto />,
+    }
+  ];
+
+  const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
     <div className='AccountDetail container'>
-        <h4>
+        <p>
             Address: <a href={`https://goerli.etherscan.io/address/${account.address}`} target="_blank" rel="noreferrer">
             {account.address}
             </a><br/>
             Balance: {balance} ETH
-        </h4>
-        <ul className="nav nav-tabs" id="myTab" role="tablist">
-        <li className="nav-item" role="presentation">
-          <button className="nav-link active" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions" type="button" role="tab" aria-controls="transactions" aria-selected="true">Transactions</button>
-        </li>
-        <li className="nav-item" role="presentation">
-          <button className="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
-        </li>
-        <li className="nav-item" role="presentation">
-          <button className="nav-link" id="buy-sell-tab" data-bs-toggle="tab" data-bs-target="#buy-sell" type="button" role="tab" aria-controls="buy-sell" aria-selected="false">Buy/Sell</button>
-        </li>
-      </ul>
-      <div className="tab-content" id="myTabContent">
-        <div className="tab-pane fade show active" id="transactions" role="tabpanel" aria-labelledby="transactions-tab">
-          <AccountTransactions account={account} />
-        </div>
-        <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          <SendCrypto account={account} />
-        </div>
-        <div className="tab-pane fade" id="buy-sell" role="tabpanel" aria-labelledby="buy-sell-tab">
-          <BuySellCrypto />
-        </div>
+        </p>
+        <ul className="nav nav-tabs mb-3" id="myTab" role="tablist">
+          {tabs.map(tab => (
+            <li key={tab.id} className="nav-item" role="presentation">
+              <button
+                className={`nav-link${tab.id === activeTab.id ? ' active' : ''}`}
+                id={`${tab.id}-tab`}
+                type="button"
+                role="tab"
+                aria-controls={tab.id}
+                aria-selected={tab.id === activeTab.id}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <div className="tab-content" id="myTabContent">
+          <div
+            className="tab-pane fade show active"
+            id={activeTab.id}
+            role="tabpanel"
+            aria-labelledby={`${activeTab.id}-tab`} />
+                      {
+                        activeTab.component({account})
+                      }
       </div>
     </div>
   )

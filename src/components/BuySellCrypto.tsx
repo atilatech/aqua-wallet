@@ -1,25 +1,25 @@
 import React from 'react';
 import transakSDK from "@transak/transak-sdk";
-
-const settings = {
-    apiKey: '',  // Your API Key
-    environment: "STAGING", // STAGING/PRODUCTION
-    defaultCryptoCurrency: 'ETH',
-    themeColor: '000000', // App theme color
-    hostURL: window.location.origin,
-    widgetHeight: "700px",
-    widgetWidth: "500px",
-}
-
+import { Environment } from '../utils/Environment';
 
 function BuySellCrypto() {
+
+    const settings = {
+        apiKey: Environment.TRANSAK_API_KEY,  // Your API Key
+        environment: "STAGING", // STAGING/PRODUCTION
+        defaultCryptoCurrency: 'ETH',
+        themeColor: '000000', // App theme color
+        hostURL: window.location.origin,
+        widgetHeight: "700px",
+        widgetWidth: "500px",
+    }
 
     function openTransak() {
         const transak = new transakSDK(settings);
 
         transak.init();
 
-        console.log({transakSDK, transak})
+        console.log({transakSDK, transak, settings, Environment})
 
         // To get all the events
         transak.on(transak.ALL_EVENTS, (data: any) => {

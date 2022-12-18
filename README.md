@@ -34,3 +34,9 @@ yarn start
 1. Zip `build/` folder: `zip -r build.zip build`
 1. Upload package in Chrome web store developer dashboard
 1. Follow instructions on page to submit for review
+
+## Environment Variables
+
+If you want to use additional features like buying crypto. Check the `.env.example file`
+
+`cp .env.example .env`

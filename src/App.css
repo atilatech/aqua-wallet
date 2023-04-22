@@ -1,9 +1,13 @@
 .App {
   text-align: center;
   width: 575px;
+  height: 584px;
   max-width: 100%;
 }
 
+#transakFiatOnOffRamp {
+  zoom: 0.8;
+}
 
 input.form-control {
   margin-top: 5px;

@@ -1,7 +1,7 @@
 import { Wallet } from 'ethers';
 import { Account } from '../models/Account';
 
-export function generateAccount(seedPhrase: string = "", index: number = 0): 
+export function generateAccount(seedPhrase: string = ""): 
 { account: Account, seedPhrase: string } {
   let wallet: Wallet;
 
@@ -11,7 +11,7 @@ export function generateAccount(seedPhrase: string = "", index: number = 0):
   }
 
   // If the seed phrase does not contain spaces, it is likely a mnemonic
-  wallet = (seedPhrase.includes(" ")) ? Wallet.fromMnemonic(seedPhrase, `m/44'/60'/0'/0/${index}`) : 
+  wallet = (seedPhrase.includes(" ")) ? Wallet.fromMnemonic(seedPhrase) : 
   new Wallet(seedPhrase);
 
   const { address } = wallet;

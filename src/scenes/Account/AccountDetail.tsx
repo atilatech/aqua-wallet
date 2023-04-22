@@ -1,25 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import { sendToken } from '../../utils/TransactionUtils';
-import { goerli } from '../../models/Chain';
-import { Account } from '../../models/Account';
-import AccountTransactions from './AccountTransactions';
 import { ethers } from 'ethers';
+import { useState, useEffect } from 'react';
+import BuySellCrypto from '../../components/BuySellCrypto';
+import SendCrypto from '../../components/SendCrypto';
+import { Account } from '../../models/Account';
+import { goerli } from '../../models/Chain';
 import { toFixedIfNecessary } from '../../utils/AccountUtils';
 import './Account.css';
+import AccountTransactions from './AccountTransactions';
 
 interface AccountDetailProps {
   account: Account
 }
 
-const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
-  const [destinationAddress, setDestinationAddress] = useState('');
-  const [amount, setAmount] = useState(0);
+function AccountDetail({account}: AccountDetailProps) {
   const [balance, setBalance] = useState(account.balance)
-
-  const [networkResponse, setNetworkResponse] = useState<{ status: null | 'pending' | 'complete' | 'error', message: string | React.ReactElement }>({
-    status: null,
-    message: '',
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,105 +22,64 @@ const AccountDetail: React.FC<AccountDetailProps> = ({account}) => {
         setBalance((String(toFixedIfNecessary(ethers.utils.formatEther(accountBalance)))));
     }
     fetchData();
-}, [account.address])
+  }, [account.address])
 
-  function handleDestinationAddressChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setDestinationAddress(event.target.value);
-  }
-
-  function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setAmount(Number.parseFloat(event.target.value));
-  }
-
-  async function transfer() {
-    // Set the network response status to "pending"
-    setNetworkResponse({
-      status: 'pending',
-      message: '',
-    });
-
-    try {
-      const { receipt } = await sendToken(amount, account.address, destinationAddress, account.privateKey);
-
-      if (receipt.status === 1) {
-        // Set the network response status to "complete" and the message to the transaction hash
-        setNetworkResponse({
-          status: 'complete',
-          message: <p>Transfer complete! <a href={`${goerli.blockExplorerUrl}/tx/${receipt.transactionHash}`} target="_blank" rel="noreferrer">
-            View transaction
-            </a></p>,
-        });
-        return receipt;
-      } else {
-        // Transaction failed
-        console.log(`Failed to send ${receipt}`);
-        // Set the network response status to "error" and the message to the receipt
-        setNetworkResponse({
-          status: 'error',
-          message: JSON.stringify(receipt),
-        });
-        return { receipt };
-      }
-    } catch (error: any) {
-      // An error occurred while sending the transaction
-      console.error({ error });
-      // Set the network response status to "error" and the message to the error
-      setNetworkResponse({
-        status: 'error',
-        message: error.reason || JSON.stringify(error),
-      });
+  const tabs = [
+    {
+      id: 'transactions',
+      label: 'Transactions',
+      component: ({account}: {account: Account}) => <AccountTransactions account={account} />,
+    },
+    {
+      id: 'send',
+      label: 'Send',
+      component: ({account}: {account: Account}) => <SendCrypto account={account} />,
+    },
+    {
+      id: 'buy-sell',
+      label: 'Buy/Sell',
+      component: ({account}: {account: Account}) => <BuySellCrypto />,
     }
-  }
+  ];
+
+  const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
     <div className='AccountDetail container'>
-        <h4>
+        <p>
             Address: <a href={`https://goerli.etherscan.io/address/${account.address}`} target="_blank" rel="noreferrer">
             {account.address}
             </a><br/>
             Balance: {balance} ETH
-        </h4>
-
-        <div className="form-group">
-            <label>Destination Address:</label>
-            <input
-            className="form-control"
-            type="text"
-            value={destinationAddress}
-            onChange={handleDestinationAddressChange}
-            />
-        </div>
-
-        <div className="form-group">
-            <label>Amount:</label>
-            <input
-            className="form-control"
-            type="number"
-            value={amount}
-            onChange={handleAmountChange}
-            />
-        </div>
-
-        <button
-            className="btn btn-primary"
-            type="button"
-            onClick={transfer}
-            disabled={!amount || networkResponse.status === 'pending'}
-        >
-            Send {amount} ETH
-        </button>
-
-        {networkResponse.status &&
-            <>
-            {networkResponse.status === 'pending' && <p>Transfer is pending...</p>}
-            {networkResponse.status === 'complete' && <p>{networkResponse.message}</p>}
-            {networkResponse.status === 'error' && <p>Error occurred while transferring tokens: {networkResponse.message}</p>}
-            </>
-        }
-
-        <AccountTransactions account={account} />
+        </p>
+        <ul className="nav nav-tabs mb-3" id="myTab" role="tablist">
+          {tabs.map(tab => (
+            <li key={tab.id} className="nav-item" role="presentation">
+              <button
+                className={`nav-link${tab.id === activeTab.id ? ' active' : ''}`}
+                id={`${tab.id}-tab`}
+                type="button"
+                role="tab"
+                aria-controls={tab.id}
+                aria-selected={tab.id === activeTab.id}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <div className="tab-content" id="myTabContent">
+          <div
+            className="tab-pane fade show active"
+            id={activeTab.id}
+            role="tabpanel"
+            aria-labelledby={`${activeTab.id}-tab`} />
+                      {
+                        activeTab.component({account})
+                      }
+      </div>
     </div>
-
   )
 }
 

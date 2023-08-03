@@ -1,25 +1,17 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "short_name": "Aqua Wallet",
+  "name": "Aqua Wallet",
+  "description": "A crypto wallet for using the blockchain.",
+  "manifest_version": 3,
+  "version": "1.0",
+  "action": {
+      "default_popup": "index.html",
+      "default_title": "Open Wallet"
+  },
+  "permissions": [],
+  "icons": {
+      "16": "walletLogo512.png",
+      "48": "walletLogo512.png",
+      "128": "walletLogo512.png"
+  }
 }

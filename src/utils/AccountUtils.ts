@@ -28,3 +28,4 @@ export const generateWalletData = async (seedPhrase?: string): Promise<WalletDat
 };
 
 export default generateWalletData;
+
